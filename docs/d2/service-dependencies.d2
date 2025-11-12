@@ -1,0 +1,381 @@
+title: Gautama Service Dependencies & Data Flow {
+  near: top-center
+  shape: text
+  style: {
+    font-size: 40
+    bold: true
+  }
+}
+
+# Storage Layer
+storage_layer: {
+  label: "Storage Layer"
+  style.fill: "#e8f4f8"
+  style.stroke: "#0066cc"
+  style.stroke-width: 3
+
+  zfs: {
+    label: "ZFS Pools"
+    rpool: "rpool\n(System)"
+    tank: "tank\n(Data)"
+    gdrive: "gdrive\n(Archive)"
+  }
+
+  postgres: {
+    label: "PostgreSQL 17"
+    main_db: "Main Database"
+    pgvector: "+ pgvector ext"
+    stored_data: "• Nextcloud\n• Home Assistant\n• Gitea\n• Vanna AI"
+  }
+
+  redis: {
+    label: "Redis Instances"
+    litellm_cache: "LiteLLM Cache"
+    nextcloud_cache: "Nextcloud Cache"
+  }
+
+  zfs -> postgres: "Stores on"
+  postgres -> redis: "Cached by"
+}
+
+# Security Layer
+security_layer: {
+  label: "Security & Secrets"
+  style.fill: "#f4e8f0"
+  style.stroke: "#cc0066"
+  style.stroke-width: 3
+
+  step_ca: {
+    label: "step-ca"
+    root_ca: "Root CA"
+    intermediate: "Intermediate CA"
+    issued_certs: "Issues TLS certs"
+  }
+
+  sops: {
+    label: "SOPS-nix"
+    secrets_yaml: "secrets.yaml\n(encrypted)"
+    runtime_secrets: "/run/secrets/\n(decrypted)"
+  }
+
+  step_ca -> sops: "Protected by"
+}
+
+# Network Layer
+network_layer: {
+  label: "Network & Routing"
+  style.fill: "#f0f4e8"
+  style.stroke: "#66cc00"
+  style.stroke-width: 3
+
+  nginx: {
+    label: "Nginx Reverse Proxy"
+    ssl: "TLS Termination"
+    routes: {
+      hass: "hass.vulcan.lan"
+      grafana: "grafana.vulcan.lan"
+      nextcloud: "nextcloud.vulcan.lan"
+      gitea: "gitea.vulcan.lan"
+      nagios: "nagios.vulcan.lan"
+    }
+  }
+
+  dns: {
+    label: "Technitium DNS"
+    internal: "*.vulcan.lan"
+    external: "External DNS"
+  }
+
+  vpn: {
+    label: "VPN/Tunnels"
+    tailscale: Tailscale
+    cloudflare: "Cloudflare Tunnels"
+  }
+
+  firewall: {
+    label: "NixOS Firewall"
+    rules: "Port Rules"
+    filtering: "Packet Filtering"
+  }
+
+  dns -> nginx: "Resolves to"
+  vpn -> nginx: "Tunnels through"
+  firewall -> nginx: "Protects"
+}
+
+# Mail Stack
+mail_stack: {
+  label: "Mail Infrastructure"
+  style.fill: "#f8f4e8"
+  style.stroke: "#cc9900"
+  style.stroke-width: 3
+
+  external_mail: {
+    label: "External Mail"
+    fastmail: Fastmail
+    gmail: Gmail
+  }
+
+  mbsync: {
+    label: "mbsync"
+    sync_fastmail: "Sync Fastmail"
+    sync_gmail: "Sync Gmail"
+    metrics: "→ Prometheus"
+  }
+
+  dovecot: {
+    label: "Dovecot (IMAP)"
+    imap_server: "IMAP Server"
+    fts: "Xapian FTS"
+    mailboxes: "Virtual Users"
+  }
+
+  postfix: {
+    label: "Postfix (SMTP)"
+    smtp_server: "SMTP Server"
+    queue: "Mail Queue"
+  }
+
+  roundcube: {
+    label: "Roundcube"
+    webmail: "Webmail UI"
+  }
+
+  external_mail -> mbsync: "Pull mail from"
+  mbsync -> dovecot: "Stores in"
+  dovecot -> roundcube: "Serves to"
+  postfix -> dovecot: "Delivers to"
+}
+
+# Web Services
+web_services: {
+  label: "Web Applications"
+  style.fill: "#f0f8e8"
+  style.stroke: "#00cc66"
+  style.stroke-width: 3
+
+  nextcloud: {
+    label: "Nextcloud"
+    files: "File Storage"
+    calendar: "Calendar/Contacts"
+    collaboration: "Collaboration"
+  }
+
+  gitea: {
+    label: "Gitea"
+    git_server: "Git Server"
+    mirrors: "GitHub Mirrors"
+    actions: "CI/CD Actions"
+  }
+
+  jellyfin: {
+    label: "Jellyfin"
+    media: "Media Server"
+    transcode: "Transcoding"
+  }
+
+  glance: {
+    label: "Glance"
+    dashboard: "Dashboard"
+    widgets: "Custom Widgets"
+  }
+}
+
+# Smart Home
+smart_home: {
+  label: "Smart Home Platform"
+  style.fill: "#e8f0f8"
+  style.stroke: "#0099cc"
+  style.stroke-width: 3
+
+  home_assistant: {
+    label: "Home Assistant"
+    core: "HA Core"
+    integrations: {
+      yale: Yale
+      bmw: BMW
+      ring: Ring
+      nest: Nest
+      enphase: Enphase
+      lg: LG
+      google: "Google Assistant"
+    }
+    automations: "Automations"
+  }
+
+  node_red: {
+    label: "Node-RED"
+    flows: "Visual Flows"
+    mqtt: "MQTT Bridge"
+  }
+
+  n8n: {
+    label: "N8N"
+    workflows: "Automation\nWorkflows"
+  }
+
+  home_assistant -> node_red: "Triggers"
+  node_red -> n8n: "Integrates with"
+}
+
+# AI/ML Platform
+ai_ml: {
+  label: "AI/ML Services"
+  style.fill: "#f8e8f0"
+  style.stroke: "#9900cc"
+  style.stroke-width: 3
+
+  litellm: {
+    label: "LiteLLM Proxy"
+    proxy: "LLM Gateway"
+    providers: "OpenAI, Anthropic..."
+    tracking: "Usage Tracking"
+  }
+
+  vanna: {
+    label: "Vanna AI"
+    nl_to_sql: "NL → SQL"
+    jupyter: "Jupyter UI"
+  }
+
+  silly_tavern: {
+    label: "Silly Tavern"
+    chat: "AI Chat"
+    characters: "Characters"
+  }
+
+  mindsdb: {
+    label: "MindsDB"
+    ml_sql: "ML via SQL"
+  }
+
+  jupyterlab: {
+    label: "JupyterLab"
+    notebooks: "Notebooks"
+    kernels: "Multi-language"
+  }
+
+  metabase: {
+    label: "Metabase"
+    analytics: "Analytics"
+    dashboards: "BI Dashboards"
+  }
+
+  litellm -> silly_tavern: "Proxies to"
+  litellm -> vanna: "Proxies to"
+  vanna -> jupyterlab: "Runs in"
+  metabase -> mindsdb: "Queries"
+}
+
+# Monitoring
+monitoring: {
+  label: "Monitoring Services"
+  style.fill: "#f0e8f8"
+  style.stroke: "#6600cc"
+  style.stroke-width: 3
+
+  prometheus: {
+    label: "Prometheus"
+    scraping: "Metrics Scraping"
+    storage: "TSDB Storage"
+  }
+
+  grafana: {
+    label: "Grafana"
+    dashboards: "Dashboards"
+  }
+
+  nagios: {
+    label: "Nagios"
+    checks: "Service Checks"
+  }
+
+  prometheus -> grafana: "Feeds"
+}
+
+# Cross-layer Dependencies
+storage_layer.postgres -> web_services.nextcloud: "DB for"
+storage_layer.postgres -> web_services.gitea: "DB for"
+storage_layer.postgres -> smart_home.home_assistant: "DB for"
+storage_layer.postgres -> ai_ml.vanna: "DB for"
+storage_layer.postgres -> ai_ml.metabase: "Queries"
+
+storage_layer.redis.litellm_cache -> ai_ml.litellm: "Caches"
+storage_layer.redis.nextcloud_cache -> web_services.nextcloud: "Caches"
+
+storage_layer.zfs -> mail_stack.dovecot: "Stores mail on"
+storage_layer.zfs -> web_services.jellyfin: "Stores media on"
+storage_layer.zfs -> smart_home.home_assistant: "Stores config on"
+
+security_layer.step_ca -> network_layer.nginx: "Issues certs to"
+security_layer.sops -> mail_stack.mbsync: "Provides secrets to"
+security_layer.sops -> ai_ml.litellm: "Provides secrets to"
+security_layer.sops -> web_services: "Provides secrets to"
+
+network_layer.nginx -> web_services: "Routes to"
+network_layer.nginx -> smart_home.home_assistant: "Routes to"
+network_layer.nginx -> ai_ml: "Routes to"
+network_layer.nginx -> monitoring.grafana: "Routes to"
+
+mail_stack.postfix -> monitoring.prometheus: "Metrics to"
+web_services -> monitoring.prometheus: "Metrics to"
+smart_home.home_assistant -> monitoring.prometheus: "Metrics to"
+ai_ml.litellm -> monitoring.prometheus: "Metrics to"
+
+smart_home.home_assistant -> monitoring.nagios: "Checked by"
+web_services.nextcloud -> monitoring.nagios: "Checked by"
+mail_stack.postfix -> monitoring.nagios: "Checked by"
+
+# External Services
+external: {
+  label: "External Services"
+  style.fill: "#ffe8e8"
+  style.stroke: "#cc0000"
+  style.stroke-width: 2
+
+  backblaze: {
+    label: "Backblaze B2"
+    backups: "Cloud Backups"
+  }
+
+  github: {
+    label: "GitHub"
+    repos: "Source Repos"
+  }
+
+  llm_providers: {
+    label: "LLM Providers"
+    openai: OpenAI
+    anthropic: Anthropic
+  }
+}
+
+storage_layer.zfs -> external.backblaze: "Restic backups to"
+web_services.gitea -> external.github: "Mirrors from"
+ai_ml.litellm -> external.llm_providers: "Proxies to"
+
+# Legend
+legend: {
+  label: "Dependency Legend"
+  style.fill: "#f8f8e8"
+  style.stroke: "#888888"
+  style.stroke-width: 1
+
+  info: "→ Data Flow\n→ Service Dependencies\n→ Network Routing\n→ Storage Backend\n→ Authentication/Secrets\n→ Monitoring" {
+    shape: text
+    style.font-size: 12
+  }
+}
+
+# Critical Path
+critical_path: {
+  label: "Critical Service Paths"
+  style.fill: "#fff0e8"
+  style.stroke: "#cc6600"
+  style.stroke-width: 2
+
+  paths: "1. ZFS → PostgreSQL → Apps\n2. SOPS → Secrets → Services\n3. step-ca → Nginx → Web Apps\n4. Prometheus → Grafana → Dashboards\n5. External Mail → mbsync → Dovecot" {
+    shape: text
+    style.font-size: 12
+  }
+}

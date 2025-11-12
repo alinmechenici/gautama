@@ -1,0 +1,373 @@
+title: Gautama Backup & Disaster Recovery Strategy {
+  near: top-center
+  shape: text
+  style: {
+    font-size: 40
+    bold: true
+  }
+}
+
+subtitle: Multi-Layer Protection with ZFS + Restic {
+  near: top-center
+  shape: text
+  style: {
+    font-size: 18
+  }
+}
+
+# Production Data Sources
+data_sources: {
+  label: "Production Data Sources"
+  style.fill: "#e8f4f8"
+  style.stroke: "#0066cc"
+  style.stroke-width: 3
+
+  critical_data: {
+    label: "Critical Data"
+    postgres: "PostgreSQL\nDatabases"
+    home_assistant: "Home Assistant\nConfigs"
+    nextcloud: "Nextcloud\nFiles"
+    gitea: "Gitea\nRepositories"
+  }
+
+  user_data: {
+    label: "User Data"
+    home: "/home\nDirectories"
+    documents: "Documents"
+    projects: "Projects"
+    audio: "Audio Library"
+    video: "Video Library"
+  }
+
+  system_data: {
+    label: "System Data"
+    configs: "/etc/nixos\nConfiguration"
+    secrets: "SOPS Secrets"
+    certificates: "step-ca Certs"
+  }
+
+  mail_data: {
+    label: "Mail Data"
+    dovecot: "Dovecot\nMailboxes"
+    archives: "Email Archives"
+  }
+
+  container_data: {
+    label: "Container Data"
+    volumes: "Podman Volumes"
+    configs: "Container Configs"
+  }
+}
+
+# Layer 1: ZFS Snapshots (Local)
+zfs_layer: {
+  label: "Layer 1: ZFS Snapshots (Sanoid)"
+  style.fill: "#f0f4e8"
+  style.stroke: "#66cc00"
+  style.stroke-width: 4
+
+  pools: {
+    label: "ZFS Pools"
+    rpool: "rpool\n(System)"
+    tank: "tank\n(Data)"
+    gdrive: "gdrive\n(Archive)"
+  }
+
+  snapshot_templates: {
+    label: "Snapshot Templates"
+
+    active: {
+      label: "Active Template"
+      retention: "Hourly: 24\nDaily: 7\nMonthly: 3"
+      datasets: "Home dirs, Projects"
+    }
+
+    production: {
+      label: "Production Template"
+      retention: "Hourly: 24\nDaily: 14\nWeekly: 4\nMonthly: 3"
+      datasets: "PostgreSQL, HA, Gitea"
+    }
+
+    archival: {
+      label: "Archival Template"
+      retention: "Hourly: 24\nDaily: 30\nWeekly: 8\nMonthly: 12\nYearly: 5"
+      datasets: "Media, Archives"
+    }
+  }
+
+  automation: {
+    label: "Automation"
+    sanoid: "Sanoid\n(automated)"
+    monitoring: "ZFS Exporter\n→ Prometheus"
+  }
+
+  pools -> snapshot_templates: "Snapshot using"
+  snapshot_templates -> automation: "Managed by"
+}
+
+# Layer 2: PostgreSQL Backups
+postgres_layer: {
+  label: "Layer 2: PostgreSQL Backups"
+  style.fill: "#f4e8f0"
+  style.stroke: "#cc0066"
+  style.stroke-width: 3
+
+  backup_service: {
+    label: "Backup Service"
+    timer: "Daily @ 2 AM"
+    location: "/tank/Backups/PostgreSQL/"
+    format: "pg_dumpall"
+  }
+
+  retention: {
+    label: "Retention"
+    policy: "Keep recent backups"
+    monitoring: "Backup size tracking"
+  }
+
+  backup_service -> retention: "Rotated by"
+}
+
+# Layer 3: Restic Cloud Backups
+restic_layer: {
+  label: "Layer 3: Restic Cloud Backups"
+  style.fill: "#f8f4e8"
+  style.stroke: "#cc9900"
+  style.stroke-width: 4
+
+  filesets: {
+    label: "Backup Filesets"
+
+    home_fileset: {
+      label: "Home Fileset"
+      paths: "/home/johnw\n/home/assembly"
+      schedule: "Daily @ 2 AM"
+    }
+
+    documents: {
+      label: "Documents"
+      paths: "/tank/Documents"
+      schedule: "Daily @ 2 AM"
+    }
+
+    projects: {
+      label: "Projects"
+      paths: "/tank/Projects"
+      schedule: "Daily @ 2 AM"
+    }
+
+    media: {
+      label: "Media Files"
+      audio: "/tank/Audio"
+      video: "/tank/Video"
+      schedule: "Daily @ 2 AM"
+    }
+
+    configs: {
+      label: "System Configs"
+      paths: "/etc/nixos"
+      schedule: "Daily @ 2 AM"
+    }
+  }
+
+  retention_policy: {
+    label: "Retention Policy"
+    daily: "7 daily"
+    weekly: "5 weekly"
+    yearly: "3 yearly"
+    prune: "Auto-prune old"
+  }
+
+  monitoring: {
+    label: "Monitoring"
+    textfile: "Textfile Collector"
+    metrics: "Backup status\nSnapshot counts\nBackup sizes"
+    alerts: "Failure alerts"
+  }
+
+  filesets -> retention_policy: "Retained by"
+  retention_policy -> monitoring: "Monitored by"
+}
+
+# Cloud Storage
+cloud_storage: {
+  label: "Cloud Storage (Backblaze B2)"
+  style.fill: "#ffe8e8"
+  style.stroke: "#cc0000"
+  style.stroke-width: 3
+
+  b2_buckets: {
+    label: "B2 Buckets"
+    encrypted: "Encrypted at rest"
+    versioned: "Versioning enabled"
+    geographically_distributed: "Geographic redundancy"
+  }
+
+  cost: {
+    label: "Cost Optimization"
+    dedup: "Restic deduplication"
+    compression: "Built-in compression"
+    incremental: "Incremental backups"
+  }
+
+  b2_buckets -> cost: "Optimized by"
+}
+
+# Recovery Procedures
+recovery: {
+  label: "Recovery Procedures"
+  style.fill: "#f0f8e8"
+  style.stroke: "#00cc66"
+  style.stroke-width: 3
+
+  zfs_recovery: {
+    label: "ZFS Recovery"
+    rollback: "zfs rollback"
+    clone: "zfs clone"
+    rto: "RTO: Minutes"
+  }
+
+  postgres_recovery: {
+    label: "PostgreSQL Recovery"
+    restore: "psql < backup.sql"
+    rto: "RTO: 10-30 min"
+  }
+
+  restic_recovery: {
+    label: "Restic Recovery"
+    list: "restic snapshots"
+    restore: "restic restore"
+    mount: "restic mount"
+    rto: "RTO: Hours (network)"
+  }
+
+  disaster_recovery: {
+    label: "Disaster Recovery"
+    full_restore: "Full system rebuild"
+    nixos_rebuild: "NixOS declarative"
+    data_restore: "Restic restore all"
+    rto: "RTO: 1-2 days"
+  }
+}
+
+# Backup Operations Tools
+tools: {
+  label: "Backup Management Tools"
+  style.fill: "#e8f0f8"
+  style.stroke: "#0099cc"
+  style.stroke-width: 2
+
+  helper_scripts: {
+    label: "Helper Scripts"
+    restic_ops: "restic-operations\n(check, repair, prune)"
+    restic_snapshots: "restic-snapshots\n(view all)"
+    per_fileset: "restic-<fileset>\n(individual ops)"
+  }
+
+  monitoring_scripts: {
+    label: "Monitoring Scripts"
+    logwatch_zfs: "logwatch-zfs-snapshot"
+    backup_status: "Prometheus metrics"
+  }
+
+  helper_scripts -> monitoring_scripts: "Feeds"
+}
+
+# Data Flow - Layer 1
+data_sources.critical_data -> zfs_layer.pools: "Stored on"
+data_sources.user_data -> zfs_layer.pools: "Stored on"
+data_sources.system_data -> zfs_layer.pools: "Stored on"
+data_sources.mail_data -> zfs_layer.pools: "Stored on"
+data_sources.container_data -> zfs_layer.pools: "Stored on"
+
+zfs_layer.pools -> zfs_layer.snapshot_templates: "Snapshot via"
+
+# Data Flow - Layer 2
+data_sources.critical_data.postgres -> postgres_layer.backup_service: "Backed up by"
+
+# Data Flow - Layer 3
+zfs_layer.pools -> restic_layer.filesets: "Backed up by"
+data_sources.user_data -> restic_layer.filesets.home_fileset: "Backed up"
+data_sources.user_data -> restic_layer.filesets.documents: "Backed up"
+data_sources.user_data -> restic_layer.filesets.projects: "Backed up"
+data_sources.system_data -> restic_layer.filesets.configs: "Backed up"
+
+# Cloud Upload
+restic_layer.filesets -> cloud_storage.b2_buckets: "Upload to"
+restic_layer.monitoring -> tools.monitoring_scripts: "Reports to"
+
+# Recovery Paths
+zfs_layer.snapshot_templates -> recovery.zfs_recovery: "Restore from"
+postgres_layer.backup_service -> recovery.postgres_recovery: "Restore from"
+cloud_storage.b2_buckets -> recovery.restic_recovery: "Restore from"
+cloud_storage.b2_buckets -> recovery.disaster_recovery: "Full restore from"
+
+# Tools Integration
+tools.helper_scripts -> restic_layer.filesets: "Manages"
+tools.helper_scripts -> cloud_storage.b2_buckets: "Operates on"
+
+# Backup Strategy Summary
+strategy_summary: {
+  label: "Backup Strategy Summary"
+  style.fill: "#fffde8"
+  style.stroke: "#ccaa00"
+  style.stroke-width: 3
+
+  layers: {
+    label: "Protection Layers"
+    layer1: "1. ZFS Snapshots\n   • Local, instant recovery\n   • Hourly/daily/weekly/monthly\n   • 3 retention templates"
+    layer2: "2. PostgreSQL Dumps\n   • Daily @ 2 AM\n   • Database-specific backups\n   • Local storage"
+    layer3: "3. Restic Cloud Backups\n   • Daily @ 2 AM\n   • Encrypted, deduplicated\n   • Geographic redundancy\n   • 7d/5w/3y retention"
+  }
+
+  benefits: {
+    label: "Key Benefits"
+    points: "✓ Multiple recovery points\n✓ Protection from hardware failure\n✓ Protection from data corruption\n✓ Protection from ransomware\n✓ Geographic distribution\n✓ Automated operations\n✓ Monitored & alerted\n✓ Tested recovery procedures"
+  }
+}
+
+# RTO/RPO Matrix
+rto_rpo: {
+  label: "Recovery Time/Point Objectives"
+  style.fill: "#e8ffe8"
+  style.stroke: "#00aa00"
+  style.stroke-width: 2
+
+  objectives: {
+    label: "Objectives by Scenario"
+    accidental_delete: "Accidental Delete\n  • ZFS rollback\n  • RTO: 1-5 min\n  • RPO: 1 hour"
+
+    disk_failure: "Disk Failure\n  • ZFS resilver\n  • RTO: Hours\n  • RPO: Last snapshot"
+
+    data_corruption: "Data Corruption\n  • Restic restore\n  • RTO: Hours\n  • RPO: 24 hours"
+
+    total_loss: "Total Loss\n  • Full DR\n  • RTO: 1-2 days\n  • RPO: 24 hours"
+  }
+}
+
+# Monitoring Integration
+monitoring_integration: {
+  label: "Monitoring Integration"
+  style.fill: "#f0e8f8"
+  style.stroke: "#6600cc"
+  style.stroke-width: 2
+
+  prometheus_metrics: {
+    label: "Prometheus Metrics"
+    zfs: "ZFS pool health\nSnapshot counts"
+    restic: "Backup success/failure\nSnapshot counts\nBackup sizes\nLast backup time"
+  }
+
+  alerts: {
+    label: "Automated Alerts"
+    backup_failure: "Backup failure"
+    disk_health: "ZFS pool degraded"
+    space: "Low disk space"
+    old_backups: "Backup too old"
+  }
+
+  prometheus_metrics -> alerts: "Triggers"
+}
+
+restic_layer.monitoring -> monitoring_integration.prometheus_metrics.restic: "Feeds"
+zfs_layer.automation.monitoring -> monitoring_integration.prometheus_metrics.zfs: "Feeds"

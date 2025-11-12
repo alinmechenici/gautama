@@ -1,0 +1,303 @@
+title: Gautama Architecture Layers {
+  near: top-center
+  shape: text
+  style: {
+    font-size: 40
+    bold: true
+  }
+}
+
+direction: down
+
+# Layer 1: Hardware & Boot
+layer1: {
+  label: "Layer 1: Hardware & Boot"
+  style.fill: "#e8f4f8"
+  style.stroke: "#0066cc"
+  style.stroke-width: 3
+
+  hardware: {
+    label: "Apple Silicon Hardware"
+    mac: "Mac (aarch64)\n64GB RAM"
+  }
+
+  boot: {
+    label: "Boot System"
+    grub: GRUB + EFI
+    asahi: Asahi Linux\nKernel 6.16.x
+  }
+
+  hardware -> boot: "Boots"
+}
+
+# Layer 2: NixOS Core
+layer2: {
+  label: "Layer 2: NixOS Core System"
+  style.fill: "#f0f4e8"
+  style.stroke: "#66cc00"
+  style.stroke-width: 3
+
+  nix_core: {
+    label: "Nix System"
+    flakes: "Flake-based Config\n(80+ modules)"
+    state_version: "StateVersion 25.05"
+  }
+
+  system_services: {
+    label: "System Services"
+    systemd: systemd
+    networkmanager: NetworkManager
+    firewall: NixOS Firewall
+  }
+
+  nix_core -> system_services: "Configures"
+}
+
+# Layer 3: Storage & Security
+layer3: {
+  label: "Layer 3: Storage & Security Foundation"
+  style.fill: "#f4e8f0"
+  style.stroke: "#cc0066"
+  style.stroke-width: 3
+
+  storage: {
+    label: "Storage Layer"
+    zfs: {
+      pools: "ZFS Pools\n(rpool, tank, gdrive)"
+      snapshots: "Sanoid Snapshots\n(3 templates)"
+      tuning: "ARC: 32GB max, 4GB min"
+    }
+    backups: {
+      restic: "Restic Cloud Backups"
+      b2: "→ Backblaze B2"
+      retention: "7d/5w/3y retention"
+    }
+  }
+
+  security: {
+    label: "Security Layer"
+    secrets: {
+      sops: "SOPS-nix\nAge Encryption"
+      runtime: "/run/secrets/"
+    }
+    pki: {
+      step_ca: "step-ca\nPrivate CA"
+      certs: "TLS Certificates"
+    }
+    hardening: {
+      sys: "Security Hardening"
+      firewall: "Firewall Rules"
+    }
+  }
+
+  storage.zfs -> storage.backups: "Backed up by"
+  security.secrets -> security.pki: "Protects"
+  security.pki -> security.hardening: "Integrates with"
+}
+
+# Layer 4: Infrastructure Services
+layer4: {
+  label: "Layer 4: Infrastructure Services"
+  style.fill: "#f8f4e8"
+  style.stroke: "#cc9900"
+  style.stroke-width: 3
+
+  networking: {
+    label: "Networking"
+    nginx: "Nginx\nReverse Proxy"
+    dns: "Technitium DNS"
+    vpn: "Tailscale/Nebula VPN"
+    tunnels: "Cloudflare Tunnels"
+  }
+
+  databases: {
+    label: "Databases"
+    postgres: "PostgreSQL 17\n+ pgvector"
+    redis: "Redis x2\n(LiteLLM, Nextcloud)"
+  }
+
+  mail_infra: {
+    label: "Mail Infrastructure"
+    postfix: "Postfix (SMTP)"
+    dovecot: "Dovecot (IMAP)\n+ Xapian FTS"
+    rspamd: "Rspamd\n(Spam Filter)"
+  }
+
+  networking -> databases: "Connects to"
+  databases -> mail_infra: "Stores data for"
+}
+
+# Layer 5: Application Services
+layer5: {
+  label: "Layer 5: Application Services (60+)"
+  style.fill: "#f0f8e8"
+  style.stroke: "#00cc66"
+  style.stroke-width: 3
+
+  web_apps: {
+    label: "Web Applications"
+    nextcloud: Nextcloud
+    jellyfin: Jellyfin
+    gitea: Gitea
+    roundcube: Roundcube
+    glance: Glance
+    pgadmin: pgAdmin
+    cockpit: Cockpit
+  }
+
+  smart_home: {
+    label: "Smart Home"
+    hass: "Home Assistant\n(17+ integrations)"
+    node_red: Node-RED
+    automations: "Smart Automations"
+  }
+
+  mail_services: {
+    label: "Mail Services"
+    mbsync: "mbsync\n(Fastmail/Gmail)"
+    fetchmail: Fetchmail
+    archive: "Email Archive"
+  }
+
+  web_apps -> smart_home: "Integrated"
+}
+
+# Layer 6: Container Platform
+layer6: {
+  label: "Layer 6: Container Platform (20+)"
+  style.fill: "#e8f0f8"
+  style.stroke: "#0099cc"
+  style.stroke-width: 3
+
+  container_runtime: {
+    label: "Container Runtime"
+    podman: "Podman (Rootless)"
+    quadlet: "Quadlet\n(systemd integration)"
+  }
+
+  ai_ml_containers: {
+    label: "AI/ML Containers"
+    litellm: LiteLLM
+    vanna: Vanna AI
+    silly_tavern: Silly Tavern
+    mindsdb: MindsDB
+    jupyter: JupyterLab
+    metabase: Metabase
+  }
+
+  productivity_containers: {
+    label: "Productivity Containers"
+    wallabag: Wallabag
+    monica: Monica
+    paperless: Paperless-AI
+    teable: Teable
+    noco: NoCo Base
+  }
+
+  infra_containers: {
+    label: "Infrastructure Containers"
+    opnsense_exp: OPNsense Exporter
+    speedtest: OpenSpeedtest
+    changedetection: ChangeDetection
+    copyparty: Copyparty
+  }
+
+  container_runtime -> ai_ml_containers: "Orchestrates"
+  container_runtime -> productivity_containers: "Orchestrates"
+  container_runtime -> infra_containers: "Orchestrates"
+}
+
+# Layer 7: Monitoring & Observability
+layer7: {
+  label: "Layer 7: Monitoring & Observability"
+  style.fill: "#f8e8f0"
+  style.stroke: "#9900cc"
+  style.stroke-width: 3
+
+  metrics: {
+    label: "Metrics Collection"
+    prometheus: "Prometheus"
+    exporters: "35+ Exporters\n(Node, PostgreSQL, ZFS, etc.)"
+    textfile: "Textfile Collectors\n(Restic, mbsync)"
+  }
+
+  visualization: {
+    label: "Visualization"
+    grafana: "Grafana\nDashboards"
+    alertmanager: "Alertmanager\nNotifications"
+  }
+
+  legacy: {
+    label: "Legacy Monitoring"
+    nagios: "Nagios\n(50+ checks)"
+    logwatch: "Logwatch\nDaily Reports"
+  }
+
+  metrics.prometheus -> metrics.exporters: "Scrapes"
+  metrics.prometheus -> visualization.grafana: "Feeds"
+  metrics.prometheus -> visualization.alertmanager: "Alerts via"
+}
+
+# Layer 8: Automation & Orchestration
+layer8: {
+  label: "Layer 8: Automation & Orchestration"
+  style.fill: "#f0e8f8"
+  style.stroke: "#6600cc"
+  style.stroke-width: 3
+
+  scheduled: {
+    label: "Scheduled Tasks"
+    timers: "32+ Systemd Timers"
+    backups: "Daily Backups (2 AM)"
+    snapshots: "ZFS Snapshots"
+    mirrors: "GitHub Mirrors (hourly)"
+  }
+
+  automation: {
+    label: "Automation Platforms"
+    n8n: N8N
+    node_red: Node-RED
+    ha_automations: "HA Automations"
+  }
+
+  maintenance: {
+    label: "Maintenance"
+    cert_renewal: "Certificate Renewal"
+    cleanup: "Log Rotation"
+    optimization: "FTS Optimization"
+  }
+
+  scheduled -> automation: "Triggers"
+  automation -> maintenance: "Performs"
+}
+
+# Cross-layer connections
+layer1 -> layer2: "Provides Platform"
+layer2 -> layer3: "Manages"
+layer3 -> layer4: "Enables"
+layer4 -> layer5: "Supports"
+layer4 -> layer6: "Supports"
+layer5 -> layer7: "Monitored by"
+layer6 -> layer7: "Monitored by"
+layer7 -> layer8: "Triggers"
+layer8 -> layer4: "Maintains"
+layer8 -> layer5: "Maintains"
+layer8 -> layer6: "Maintains"
+layer3.security -> layer4: "Secures"
+layer3.security -> layer5: "Secures"
+layer3.security -> layer6: "Secures"
+layer3.storage -> layer4.databases: "Stores"
+layer3.storage -> layer5: "Stores"
+
+# Key Features Box
+features: {
+  label: "Key Architecture Features"
+  style.fill: "#fffde8"
+  style.stroke: "#ccaa00"
+  style.stroke-width: 2
+
+  list: "✓ Fully Declarative (NixOS)\n✓ Modular Design (80+ modules)\n✓ Multi-layer Backups\n✓ Comprehensive Security\n✓ Production Monitoring\n✓ Automated Operations" {
+    shape: text
+    style.font-size: 14
+  }
+}

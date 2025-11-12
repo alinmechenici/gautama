@@ -25,6 +25,7 @@ Gautama is not just a server configuration—it's a complete personal infrastruc
 
 ## 📋 Table of Contents
 
+- [Documentation & Diagrams](#documentation--diagrams)
 - [Architecture](#architecture)
 - [Infrastructure Components](#infrastructure-components)
   - [AI/ML Platform](#aiml-platform)
@@ -38,6 +39,67 @@ Gautama is not just a server configuration—it's a complete personal infrastruc
 - [Customization & Extension](#customization--extension)
 - [State & Compatibility](#state--compatibility)
 - [Contributing](#contributing)
+
+## 📚 Documentation & Diagrams
+
+### System Architecture Diagrams
+
+Visual representations of the Gautama system architecture using D2 diagrams:
+
+- **[System Overview](docs/d2/system-overview.d2)** - High-level overview of all system components and their relationships
+- **[Architecture Layers](docs/d2/architecture-layers.d2)** - Detailed 8-layer architecture from hardware to automation
+- **[Service Dependencies](docs/d2/service-dependencies.d2)** - Service interactions, data flow, and critical paths
+- **[Monitoring Stack](docs/d2/monitoring-stack.d2)** - Complete observability infrastructure with 35+ exporters
+- **[Backup Strategy](docs/d2/backup-strategy.d2)** - Multi-layer backup and disaster recovery architecture
+
+> **Tip**: View D2 diagrams using [D2 online viewer](https://play.d2lang.com/) or install D2 locally with `curl -fsSL https://d2lang.com/install.sh | sh -s --`
+
+### Detailed Documentation
+
+Comprehensive documentation covering all aspects of the system:
+
+#### **Core Infrastructure**
+- [Architectural Review](docs/md/ARCHITECTURAL_REVIEW.md) - Complete architectural analysis and recommendations
+- [Quadlet Guide](docs/md/quadlet-guide.md) - Podman Quadlet container orchestration guide
+
+#### **Smart Home & Automation**
+- [Home Assistant Devices](docs/md/HOME_ASSISTANT_DEVICES.md) - Complete device integration documentation
+- [Home Assistant NWS Rain Detection](docs/md/HOME_ASSISTANT_NWS_RAIN_DETECTION.md) - Weather-based automation
+- [Home Assistant Bhyve Rain Delay](docs/md/HOME_ASSISTANT_BHYVE_RAIN_DELAY.md) - Irrigation control optimization
+- [Home Assistant Vacation Mode](docs/md/HOME_ASSISTANT_VACATION_MODE.md) - Presence simulation
+- [Home Assistant Nagios Monitoring](docs/md/HOME_ASSISTANT_NAGIOS_MONITORING.md) - HA service monitoring
+- [Home Assistant Alerting](docs/md/HOME_ASSISTANT_ALERTING.md) - Alert configuration
+- [Node-RED Setup](docs/md/NODE_RED_SETUP.md) - Visual automation platform
+- [N8N Webhook Setup](docs/md/N8N_WEBHOOK_SETUP.md) - Workflow automation
+
+#### **Mail Infrastructure**
+- [Sieve Filtering](docs/md/SIEVE_FILTERING.md) - Email filtering configuration
+- [Rspamd Setup](docs/md/RSPAMD_SETUP.md) - Spam filtering configuration
+- [Email Tester Monitoring](docs/md/EMAIL_TESTER_MONITORING_SETUP.md) - Email testing automation
+
+#### **Containers & Services**
+- [Nested Containers (Podman Quadlet)](docs/md/NESTED_CONTAINERS_PODMAN_QUADLET.md) - Container-in-container setup
+- [Container User Migration](docs/md/CONTAINER_USER_MIGRATION.md) - Rootless migration guide
+- [Rootless Migration Status](docs/md/ROOTLESS_MIGRATION_STATUS.md) - Migration progress tracking
+- [Windows Container Setup](docs/md/WINDOWS_CONTAINER_SETUP.md) - Windows 11 VM container
+
+#### **Monitoring & Observability**
+- [Technitium DNS Monitoring](docs/md/TECHNITIUM_DNS_MONITORING_SETUP.md) - DNS metrics collection
+- [OPNsense Exporter Setup](docs/md/OPNSENSE-EXPORTER-SETUP.md) - Firewall metrics
+- [OPNsense Exporter Workaround](docs/md/OPNSENSE-EXPORTER-WORKAROUND.md) - API transformer solution
+- [Mac Studio Power Monitoring](docs/md/MAC_STUDIO_POWER_MONITORING.md) - Hardware power tracking
+
+#### **Networking & Infrastructure**
+- [Cloudflare Tunnels](docs/md/CLOUDFLARE_TUNNELS.md) - Secure external access
+- [Cloudflare Migration](docs/md/CLOUDFLARE_MIGRATION.md) - Migration documentation
+- [Nginx to Caddy Migration PRD](docs/md/NGINX_TO_CADDY_MIGRATION_PRD.md) - Potential migration plan
+
+#### **Development & Git**
+- [Gitea Organization Workflow](docs/md/GITEA_ORG_WORKFLOW.md) - Git workflow with organizations
+- [GitHub Mirror Setup](docs/md/GITHUB_MIRROR_SETUP.md) - Automated repository mirroring
+
+#### **Planning & Design**
+- [PRD Template](docs/md/prd.md) - Product requirements document template
 
 ## 🏛️ Architecture
 

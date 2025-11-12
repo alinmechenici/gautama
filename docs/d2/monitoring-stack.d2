@@ -1,0 +1,299 @@
+title: Gautama Monitoring & Observability Stack {
+  near: top-center
+  shape: text
+  style: {
+    font-size: 40
+    bold: true
+  }
+}
+
+# Data Sources
+sources: {
+  label: "Monitored Systems & Services"
+  style.fill: "#e8f4f8"
+  style.stroke: "#0066cc"
+  style.stroke-width: 3
+
+  system: {
+    label: "System Resources"
+    cpu: "CPU Usage"
+    memory: "Memory (64GB)"
+    disk: "Disk I/O"
+    network: "Network Traffic"
+  }
+
+  services: {
+    label: "Application Services"
+    postgres: PostgreSQL 17
+    nginx: Nginx
+    postfix: Postfix
+    dovecot: Dovecot
+    hass: Home Assistant
+  }
+
+  storage: {
+    label: "Storage Systems"
+    zfs: "ZFS Pools\n(health, I/O, ARC)"
+    datasets: "Dataset Usage"
+    snapshots: "Snapshot Counts"
+  }
+
+  containers: {
+    label: "Container Platform"
+    podman: Podman Status
+    quadlet: "Quadlet Services"
+    health: "Container Health"
+  }
+}
+
+# Exporters Layer
+exporters: {
+  label: "Prometheus Exporters (35+)"
+  style.fill: "#f0f4e8"
+  style.stroke: "#66cc00"
+  style.stroke-width: 3
+
+  system_exporters: {
+    label: "System Exporters"
+    node: "Node Exporter\n:9100"
+    systemd: "Systemd Exporter\n:9558"
+  }
+
+  service_exporters: {
+    label: "Service Exporters"
+    postgres: "PostgreSQL Exporter\n:9187"
+    postfix: "Postfix Exporter\n:9154"
+    nginx: "Nginx Exporter"
+    zfs: "ZFS Exporter\n:9134"
+  }
+
+  custom_exporters: {
+    label: "Custom Exporters"
+    hass: "Home Assistant\nExporter"
+    technitium: "Technitium DNS\nExporter"
+    opnsense: "OPNsense\nExporter"
+    git_workspace: "Git Workspace\nExporter"
+  }
+
+  textfile_collectors: {
+    label: "Textfile Collectors"
+    restic: "Restic Backup\nMetrics"
+    mbsync: "mbsync Status\nMetrics"
+    container_health: "Container Health\nMetrics"
+  }
+
+  blackbox: {
+    label: "Blackbox Exporter"
+    http: "HTTP Probes"
+    icmp: "ICMP Probes"
+    tcp: "TCP Probes"
+  }
+}
+
+# Prometheus Core
+prometheus: {
+  label: "Prometheus"
+  style.fill: "#f4e8f0"
+  style.stroke: "#cc0066"
+  style.stroke-width: 4
+
+  core: {
+    label: "Prometheus Server"
+    scraping: "Metrics Scraping\n(15s interval)"
+    storage: "Time-Series DB\n(Local TSDB)"
+    retention: "15 days retention"
+  }
+
+  rules: {
+    label: "Alert Rules"
+    system_alerts: "system.yaml"
+    systemd_alerts: "systemd.yaml"
+    db_alerts: "database.yaml"
+    storage_alerts: "storage.yaml"
+    cert_alerts: "certificates.yaml"
+    network_alerts: "network.yaml"
+    nextcloud_alerts: "nextcloud.yaml"
+  }
+
+  core -> rules: "Evaluates"
+}
+
+# Alertmanager
+alertmanager: {
+  label: "Alertmanager"
+  style.fill: "#f8f4e8"
+  style.stroke: "#cc9900"
+  style.stroke-width: 3
+
+  routing: {
+    label: "Alert Routing"
+    grouping: "Group by severity"
+    deduplication: "Deduplicate alerts"
+    throttling: "Rate limiting"
+  }
+
+  notifications: {
+    label: "Notification Channels"
+    email: "Email Alerts"
+    webhook: "Webhook Integration"
+  }
+
+  routing -> notifications: "Routes to"
+}
+
+# Visualization Layer
+visualization: {
+  label: "Visualization & Analysis"
+  style.fill: "#f0f8e8"
+  style.stroke: "#00cc66"
+  style.stroke-width: 3
+
+  grafana: {
+    label: "Grafana"
+    dashboards: {
+      system: "System Dashboard"
+      services: "Services Dashboard"
+      storage: "Storage Dashboard"
+      containers: "Containers Dashboard"
+      custom: "Custom Dashboards"
+    }
+    alerts: "Visual Alerts"
+    explore: "PromQL Explorer"
+  }
+
+  victoriam: {
+    label: "VictoriaMetrics"
+    longterm: "Long-term Storage"
+    federation: "Federation Support"
+  }
+
+  grafana -> victoriam: "Alternative backend"
+}
+
+# Legacy Monitoring
+legacy: {
+  label: "Legacy Monitoring Systems"
+  style.fill: "#e8f0f8"
+  style.stroke: "#0099cc"
+  style.stroke-width: 2
+
+  nagios: {
+    label: "Nagios"
+    checks: "50+ Service Checks"
+    notifications: "Alert Notifications"
+    web_ui: "Web Interface"
+  }
+
+  logwatch: {
+    label: "Logwatch"
+    daily_reports: "Daily Email Reports"
+    sections: {
+      systemd: "Failed Services"
+      ssh: "SSH Attempts"
+      kernel: "Kernel Messages"
+      audit: "Audit Logs"
+    }
+  }
+}
+
+# Log Aggregation
+logs: {
+  label: "Log Aggregation"
+  style.fill: "#f8e8f0"
+  style.stroke: "#9900cc"
+  style.stroke-width: 2
+
+  collection: {
+    label: "Log Collection"
+    promtail: Promtail
+    journald: "systemd-journald"
+  }
+
+  storage: {
+    label: "Log Storage"
+    loki: "Loki (optional)"
+    filesystem: "Local Logs"
+  }
+
+  collection -> storage: "Ships logs to"
+}
+
+# Alert Destinations
+destinations: {
+  label: "Alert Destinations"
+  style.fill: "#f0e8f8"
+  style.stroke: "#6600cc"
+  style.stroke-width: 2
+
+  email: {
+    label: "Email Notifications"
+    admin: "Admin Email"
+  }
+
+  dashboards: {
+    label: "Dashboards"
+    grafana_ui: "Grafana UI"
+    nagios_ui: "Nagios UI"
+  }
+
+  logs: {
+    label: "Log Outputs"
+    logwatch_email: "Daily Logwatch"
+  }
+}
+
+# Connections - Data Flow
+sources.system -> exporters.system_exporters: "Exposes metrics"
+sources.services -> exporters.service_exporters: "Exposes metrics"
+sources.storage -> exporters.service_exporters.zfs: "Exposes metrics"
+sources.containers -> exporters.custom_exporters: "Exposes metrics"
+
+exporters.system_exporters -> prometheus.core: "Scrapes"
+exporters.service_exporters -> prometheus.core: "Scrapes"
+exporters.custom_exporters -> prometheus.core: "Scrapes"
+exporters.textfile_collectors -> prometheus.core: "Reads"
+exporters.blackbox -> prometheus.core: "Probes & reports"
+
+prometheus.core -> prometheus.rules: "Evaluates"
+prometheus.rules -> alertmanager.routing: "Fires alerts to"
+alertmanager.routing -> alertmanager.notifications: "Routes"
+alertmanager.notifications -> destinations.email: "Sends to"
+
+prometheus.core -> visualization.grafana: "Queries"
+visualization.grafana -> destinations.dashboards.grafana_ui: "Displays in"
+
+sources.services -> legacy.nagios: "Checked by"
+legacy.nagios -> destinations.dashboards.nagios_ui: "Displays in"
+legacy.nagios -> destinations.email: "Alerts via"
+
+sources -> logs.collection: "Logs to"
+logs.collection -> logs.storage: "Stores in"
+logs.storage -> visualization.grafana: "Queries"
+
+legacy.logwatch -> destinations.logs: "Emails daily"
+
+# Monitoring Metrics Box
+metrics_info: {
+  label: "Monitoring Metrics"
+  style.fill: "#fffde8"
+  style.stroke: "#ccaa00"
+  style.stroke-width: 2
+
+  list: "📊 35+ Prometheus Exporters\n⏱️ 15s scrape interval\n💾 15 days retention\n📈 Custom dashboards\n🚨 Multi-layer alerting\n📧 Email notifications\n🔍 Full-text log search\n📊 Real-time visualization" {
+    shape: text
+    style.font-size: 13
+  }
+}
+
+# Coverage Stats
+coverage: {
+  label: "Coverage Statistics"
+  style.fill: "#e8ffe8"
+  style.stroke: "#00aa00"
+  style.stroke-width: 2
+
+  stats: "✓ System: 100%\n✓ Services: 60+ monitored\n✓ Containers: 22 monitored\n✓ Storage: ZFS + Backups\n✓ Network: HTTP/ICMP probes\n✓ Certificates: Expiry tracking\n✓ Logs: Centralized" {
+    shape: text
+    style.font-size: 13
+  }
+}

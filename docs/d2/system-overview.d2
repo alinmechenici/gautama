@@ -1,0 +1,194 @@
+title: Gautama System Overview {
+  near: top-center
+  shape: text
+  style: {
+    font-size: 40
+    bold: true
+  }
+}
+
+subtitle: Production NixOS Infrastructure on Apple Silicon {
+  near: top-center
+  shape: text
+  style: {
+    font-size: 20
+  }
+}
+
+# Hardware Layer
+hardware: {
+  label: "Hardware Platform"
+  style.fill: "#e8f4f8"
+
+  apple_silicon: Apple Silicon (aarch64) {
+    style.fill: "#d0e8f2"
+  }
+  ram: 64GB RAM {
+    style.fill: "#d0e8f2"
+  }
+  zfs_pools: ZFS Pools\n(rpool, tank, gdrive) {
+    style.fill: "#d0e8f2"
+  }
+}
+
+# OS Layer
+os: {
+  label: "Operating System"
+  style.fill: "#f0f4e8"
+
+  nixos: NixOS 25.05 (unstable) {
+    style.fill: "#d8e8c0"
+  }
+  asahi: Asahi Linux {
+    style.fill: "#d8e8c0"
+  }
+  kernel: Kernel 6.16.x\n(ZFS-compatible) {
+    style.fill: "#d8e8c0"
+  }
+}
+
+# Core Infrastructure
+core: {
+  label: "Core Infrastructure"
+  style.fill: "#f4e8f0"
+
+  storage: Storage Layer {
+    zfs: ZFS + Sanoid
+    restic: Restic → B2
+  }
+
+  security: Security Layer {
+    step_ca: step-ca (Private CA)
+    sops: SOPS-nix (Secrets)
+    hardening: Security Hardening
+  }
+
+  networking: Network Layer {
+    nginx: Nginx (Reverse Proxy)
+    firewall: NixOS Firewall
+    dns: Technitium DNS
+    vpn: Tailscale/Nebula
+  }
+}
+
+# Services Layer
+services: {
+  label: "Services (60+)"
+  style.fill: "#f8f4e8"
+
+  databases: Databases {
+    postgresql: PostgreSQL 17
+    redis: Redis (2 instances)
+  }
+
+  mail: Mail Stack {
+    postfix: Postfix (SMTP)
+    dovecot: Dovecot (IMAP+FTS)
+    mbsync: mbsync
+  }
+
+  web: Web Services {
+    nextcloud: Nextcloud
+    jellyfin: Jellyfin
+    gitea: Gitea
+    roundcube: Roundcube
+  }
+
+  smart_home: Smart Home {
+    home_assistant: Home Assistant\n(17+ integrations)
+    node_red: Node-RED
+  }
+}
+
+# Container Layer
+containers: {
+  label: "Containers (20+)"
+  style.fill: "#e8f0f4"
+
+  ai_ml: AI/ML Platform {
+    litellm: LiteLLM
+    vanna: Vanna AI
+    silly_tavern: Silly Tavern
+    mindsdb: MindsDB
+    jupyter: JupyterLab
+  }
+
+  productivity: Productivity {
+    wallabag: Wallabag
+    monica: Monica
+    paperless: Paperless-AI
+    metabase: Metabase
+  }
+}
+
+# Monitoring Layer
+monitoring: {
+  label: "Monitoring & Observability"
+  style.fill: "#f4f0e8"
+
+  metrics: Metrics Stack {
+    prometheus: Prometheus\n(35+ exporters)
+    grafana: Grafana
+    alertmanager: Alertmanager
+  }
+
+  logs: Logs & Reporting {
+    logwatch: Logwatch
+    nagios: Nagios
+  }
+}
+
+# Automation Layer
+automation: {
+  label: "Automation"
+  style.fill: "#f0e8f4"
+
+  timers: "32+ Systemd Timers"
+  backups: Automated Backups
+  certificates: Cert Renewal
+  mirrors: GitHub Mirrors
+}
+
+# Connections
+hardware -> os: "Runs on"
+os -> core: "Provides"
+core -> services: "Supports"
+core -> containers: "Supports"
+services -> monitoring: "Monitored by"
+containers -> monitoring: "Monitored by"
+automation -> services: "Manages"
+automation -> containers: "Manages"
+core.storage -> services.databases: "Stores"
+core.storage -> services.mail: "Stores"
+core.security -> services: "Secures"
+core.security -> containers: "Secures"
+core.networking -> services: "Routes to"
+core.networking -> containers: "Routes to"
+
+# External Services
+external: {
+  label: "External Services"
+  style.fill: "#ffe8e8"
+
+  backblaze: Backblaze B2
+  cloudflare: Cloudflare Tunnels
+  github: GitHub
+  fastmail: Fastmail/Gmail
+}
+
+core.storage.restic -> external.backblaze: "Backups"
+core.networking.vpn -> external.cloudflare: "Tunnels"
+services.web.gitea -> external.github: "Mirrors"
+services.mail.mbsync -> external.fastmail: "Syncs"
+
+# Statistics Box
+stats: {
+  label: "System Statistics"
+  style.fill: "#f8f8e8"
+  shape: rectangle
+
+  info: "• 167 Nix Files\n• 62 Service Modules\n• 35+ Exporters\n• 22 Containers\n• 32+ Timers\n• 15K+ Docs Lines" {
+    shape: text
+    style.font-size: 14
+  }
+}
