@@ -1,22 +1,34 @@
-# Vulcan - Production NixOS Configuration
+# Gautama - Production NixOS Configuration
 
-A production-grade, modular NixOS configuration for self-hosted infrastructure running on Apple hardware using Asahi Linux. This configuration implements a comprehensive stack including web services, mail infrastructure, databases, monitoring, containerized applications, and multi-layer backup strategies.
+**Host: Vulcan** | **Platform: Apple Silicon (aarch64-linux via Asahi Linux)**
+
+A production-grade, modular NixOS configuration for comprehensive self-hosted infrastructure. Named "Gautama" after the Buddha's family name, this system represents an enlightened approach to infrastructure-as-code: a disciplined, declarative, and reproducible system that eliminates the chaos of traditional server management.
+
+This configuration implements a complete stack including web services, mail infrastructure, databases, monitoring, AI/ML platforms, smart home automation, containerized applications, and multi-layer backup strategies—all running on Apple Silicon hardware.
+
+## About Gautama
+
+Gautama is not just a server configuration—it's a complete personal infrastructure platform that demonstrates enterprise-grade practices applied to self-hosted systems. With 60+ services, 20+ containerized applications, and comprehensive observability, it serves as both a production system and a reference implementation for advanced NixOS patterns.
 
 ## 🚀 Key Features
 
-- **🏗️ Modular Architecture**: 70+ well-organized modules across 8 functional categories
-- **📊 Full Observability**: Prometheus, Grafana, Alertmanager with custom exporters and alert rules
-- **💾 Multi-Layer Backups**: ZFS snapshots + Restic cloud backups to Backblaze B2
-- **🔐 Security First**: SOPS-nix secrets management, private CA (step-ca), security hardening
+- **🏗️ Modular Architecture**: 80+ well-organized modules across 14 functional categories
+- **📊 Full Observability**: Prometheus, Grafana, Alertmanager with 35+ custom exporters and alert rules
+- **💾 Multi-Layer Backups**: ZFS snapshots (3 retention templates) + Restic cloud backups to Backblaze B2
+- **🔐 Security First**: SOPS-nix secrets management, private CA (step-ca), comprehensive security hardening
 - **📧 Complete Mail Stack**: Postfix, Dovecot with FTS (Xapian), mbsync with Prometheus metrics
-- **🐳 Container Orchestration**: Podman/Quadlet-based containers with proper networking
+- **🐳 Container Orchestration**: 20+ Podman/Quadlet-based containers with systemd integration
+- **🤖 AI/ML Platform**: LiteLLM proxy, Vanna AI, Silly Tavern, MindsDB, JupyterLab
+- **🏠 Smart Home Hub**: Home Assistant with 17+ integrations (Yale, BMW, Ring, Enphase, Nest, LG)
 - **🏠 Home-Manager Integration**: Declarative user environment management
-- **🍎 Apple Silicon Support**: Hardware-specific optimizations for Apple Silicon compatibility
+- **🍎 Apple Silicon Native**: Optimized for aarch64-linux on Apple hardware with Asahi Linux
 
 ## 📋 Table of Contents
 
 - [Architecture](#architecture)
 - [Infrastructure Components](#infrastructure-components)
+  - [AI/ML Platform](#aiml-platform)
+  - [Smart Home Automation](#smart-home-automation)
 - [Hardware & Platform](#hardware--platform)
 - [Quick Start](#quick-start)
 - [Management Commands](#management-commands)
@@ -33,16 +45,19 @@ This configuration follows a highly modular architecture, organizing system conf
 
 ### Module Categories
 
-| Category | Purpose | Key Modules |
-|----------|---------|-------------|
-| **Core** | System fundamentals | Boot (GRUB/EFI), networking, firewall, Nix config, systemd tuning |
-| **Services** | Application services | Web (Nginx), mail, databases, monitoring, DNS |
-| **Storage** | Data management | ZFS configuration, snapshots, backups |
-| **Containers** | Containerized apps | Podman/Quadlet setup, container services |
-| **Security** | Security & secrets | Hardening, SOPS-nix, certificate management |
-| **Users** | User management | User configs, home-manager integration |
-| **Maintenance** | System maintenance | Timers, logwatch, automation |
-| **Packages** | Custom packages | Shell configs, custom tools |
+| Category | Purpose | Module Count | Key Modules |
+|----------|---------|--------------|-------------|
+| **Core** | System fundamentals | 7 | Boot (GRUB/EFI), networking, firewall, Nix config, systemd tuning |
+| **Services** | Application services | 62 | Web (Nginx), mail, databases, monitoring, DNS, Home Assistant |
+| **Monitoring** | Observability stack | 35+ | Prometheus exporters, Grafana, Alertmanager, custom metrics |
+| **Storage** | Data management | 5 | ZFS configuration, snapshots, Restic backups |
+| **Containers** | Containerized apps | 22 | Podman/Quadlet setup, AI/ML services, web apps |
+| **Security** | Security & secrets | 3 | Hardening, SOPS-nix, certificate management (step-ca) |
+| **Users** | User management | 4 | User configs, home-manager integration |
+| **Maintenance** | System maintenance | 2 | Timers (32+), logwatch, automation |
+| **Packages** | Custom packages | 10+ | Shell configs, custom tools, overlays |
+| **Options** | Custom NixOS options | Multiple | Service-specific configuration options |
+| **Lib** | Reusable functions | 5 | mkMbsyncModule, mkQuadletService, helpers |
 
 ### Design Principles
 
@@ -51,6 +66,21 @@ This configuration follows a highly modular architecture, organizing system conf
 3. **Reusability**: Common patterns extracted into library functions (e.g., `mkMbsyncModule`)
 4. **Declarative**: Everything is version-controlled and reproducible
 5. **Production-Ready**: Comprehensive monitoring, alerting, and disaster recovery
+
+### System Statistics
+
+| Metric | Count | Description |
+|--------|-------|-------------|
+| **Nix Files** | 167 | Total configuration files |
+| **Service Modules** | 62 | Distinct service configurations |
+| **Monitoring Modules** | 35+ | Prometheus exporters and collectors |
+| **Container Services** | 22 | Podman/Quadlet containers |
+| **Active Services** | 60+ | Running systemd services |
+| **Systemd Timers** | 32+ | Scheduled automation tasks |
+| **Documentation Lines** | 15,000+ | In-repo documentation |
+| **Flake Inputs** | 11 | External dependencies |
+| **Custom Overlays** | 10+ | Package customizations |
+| **ZFS Datasets** | Multiple | Across rpool, tank, gdrive pools |
 
 ## 🏗️ Infrastructure Components
 
@@ -109,13 +139,34 @@ This configuration follows a highly modular architecture, organizing system conf
 
 ### Containerized Services
 
-All containers use Podman with Quadlet for systemd integration:
+All containers use Podman with Quadlet for systemd integration (20+ containers):
 
-- **LiteLLM**: LLM proxy and gateway
-- **Wallabag**: Article reading and archiving
+**AI/ML & Data Science:**
+- **LiteLLM**: LLM proxy and gateway with usage tracking
 - **Silly Tavern**: AI chat interface
+- **Vanna AI**: SQL code generation with AI
+- **MindsDB**: ML automation platform
+- **JupyterLab**: Data science notebooks
+- **Metabase**: Data analytics and visualization
+
+**Productivity & Collaboration:**
+- **Wallabag**: Article reading and archiving
+- **Monica**: Personal CRM
+- **Teable**: Spreadsheet database
+- **NoCo Base**: Database/CRM platform
+- **Paperless-AI**: Document processing with AI
+- **BudgetBoard**: Finance dashboard
+
+**Infrastructure & Tools:**
 - **OPNsense Exporter**: Firewall metrics (with custom API transformer)
 - **Secure Nginx**: Isolated nginx container for specific services
+- **OpenSpeedtest**: Network performance testing
+- **ChangeDetection**: Website monitoring
+- **Copyparty**: File sharing
+- **Node-RED**: Visual automation flows (containerized option)
+
+**Specialized:**
+- **Windows 11**: VM container for compatibility testing
 
 ### Backup & Disaster Recovery
 
@@ -131,11 +182,64 @@ All containers use Podman with Quadlet for systemd integration:
 - Monitoring via Prometheus textfile collector
 - Helper script: `restic-operations` (check, snapshots, prune, repair)
 
+### AI/ML Platform
+
+A comprehensive AI and machine learning infrastructure for personal use:
+
+- **LiteLLM**: Universal LLM proxy supporting multiple providers (OpenAI, Anthropic, etc.)
+  - Usage tracking and cost monitoring
+  - Redis caching for performance
+  - Prometheus metrics integration
+- **Vanna AI**: Natural language to SQL code generation
+  - PostgreSQL integration
+  - Jupyter notebook interface
+- **Silly Tavern**: Advanced AI chat interface
+  - Character-based conversations
+  - Multiple LLM backend support
+- **MindsDB**: Automated machine learning platform
+  - SQL-based ML workflows
+  - Integration with databases
+- **JupyterLab**: Full-featured data science environment
+  - Python, R, Julia support
+  - Extensible with custom kernels
+- **Metabase**: Business intelligence and analytics
+  - SQL query interface
+  - Dashboard creation
+  - PostgreSQL data source
+
+### Smart Home Automation
+
+**Home Assistant** serves as the central hub with comprehensive device integration:
+
+**Smart Devices (17+ Integrations):**
+- **Security**: Yale locks, Ring doorbell/cameras
+- **Automotive**: BMW Connected Drive
+- **Climate**: Nest thermostats, Ecobee
+- **Energy**: Enphase solar monitoring
+- **Entertainment**: LG TV, Roku
+- **Voice**: Google Assistant integration
+- **Weather**: National Weather Service (NWS)
+
+**Automation Features:**
+- **Vacation Mode**: Automated presence simulation
+- **Rain Detection**: Weather-based irrigation control
+- **Energy Optimization**: Solar monitoring and usage tracking
+- **Custom Alerts**: Prometheus-based monitoring of Home Assistant itself
+- **Nagios Integration**: Service health monitoring
+
+**Node-RED Integration:**
+- Visual automation flows
+- Complex logic orchestration
+- Integration with N8N workflows
+
 ### Additional Services
 
-- **DNS**: Technitium DNS Server
-- **Network Services**: Tailscale, Nebula VPN
-- **Media Services**: Configured media management
+- **DNS**: Technitium DNS Server with custom zones
+- **Network Services**: Tailscale, Nebula VPN, Cloudflare Tunnels
+- **Media Services**: Jellyfin media server with library management
+- **Git Services**: Gitea with GitHub mirror synchronization
+- **WebDAV**: Radicale for CalDAV/CardDAV
+- **Download Management**: Aria2 with web interface
 
 ## 🖥️ Hardware & Platform
 
@@ -605,7 +709,7 @@ system.stateVersion = "25.05";
 
 - **NixOS Version**: 25.05
 - **nixpkgs Channel**: `nixos-unstable`
-- **System Architecture**: x86_64-linux
+- **System Architecture**: aarch64-linux (Apple Silicon via Asahi Linux)
 
 ### Flake Lock
 
@@ -671,11 +775,23 @@ nix eval .#nixosConfigurations.vulcan.config.imports --json | jq
 
 ## 📚 Additional Resources
 
+**NixOS Documentation:**
 - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
 - [Nix Flakes Guide](https://nixos.wiki/wiki/Flakes)
 - [Home Manager Manual](https://nix-community.github.io/home-manager/)
 - [SOPS-nix Documentation](https://github.com/Mic92/sops-nix)
-- [nixos-hardware](https://github.com/NixOS/nixos-hardware)
+- [Quadlet-Nix](https://github.com/SEIAROTg/quadlet-nix)
+
+**Apple Silicon & Asahi Linux:**
+- [Asahi Linux](https://asahilinux.org/)
+- [nixos-apple-silicon](https://github.com/nix-community/nixos-apple-silicon)
+
+**Monitoring & Observability:**
+- [Prometheus Documentation](https://prometheus.io/docs/)
+- [Grafana Documentation](https://grafana.com/docs/)
+
+**Related Projects:**
+- [Claude Code](https://github.com/sadjow/claude-code-nix)
 
 ## 📄 License
 
@@ -683,4 +799,4 @@ This configuration is for personal use. Adapt and modify as needed for your own 
 
 ---
 
-**System**: Vulcan • **Platform**: Apple M1 (aarch64-linux) • **NixOS**: 25.05 (unstable)
+**Project**: Gautama • **Host**: Vulcan • **Platform**: Apple Silicon (aarch64-linux via Asahi Linux) • **NixOS**: 25.05 (unstable)
