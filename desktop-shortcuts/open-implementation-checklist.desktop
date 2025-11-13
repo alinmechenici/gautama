@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Implementation Checklist
+Comment=View what needs to be done to complete setup
+Exec=xdg-open /home/user/gautama/docs/IMPLEMENTATION_CHECKLIST.md
+Icon=checkbox
+Terminal=false
+Type=Application
+Categories=Development;Documentation;
+Keywords=checklist;todo;implementation;setup;
+StartupNotify=false

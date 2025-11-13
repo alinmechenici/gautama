@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Build Documentation PDFs
+Comment=Generate LaTeX and Typst PDFs from markdown documentation
+Exec=x-terminal-emulator -e bash -c '/etc/nixos/docs/scripts/build-pdfs.sh; echo ""; echo "Press Enter to close..."; read'
+Icon=document
+Terminal=true
+Type=Application
+Categories=Development;Documentation;
+Keywords=docs;pdf;latex;typst;documentation;
+StartupNotify=true

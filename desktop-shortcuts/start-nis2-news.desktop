@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Start NIS2 News (Dev)
+Comment=Start NIS2 News development server on port 3003
+Exec=x-terminal-emulator -e bash -c 'cd /home/gautama/dev/nis2-news && rails server -p 3003'
+Icon=media-playback-start
+Terminal=true
+Type=Application
+Categories=Development;WebDevelopment;
+Keywords=nis2;rails;server;news;
+StartupNotify=true

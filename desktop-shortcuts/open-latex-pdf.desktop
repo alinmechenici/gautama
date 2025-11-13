@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Open LaTeX Documentation PDF
+Comment=View the LaTeX-generated documentation PDF
+Exec=xdg-open /home/gautama/docs/gautama-docs-latex.pdf
+Icon=application-pdf
+Terminal=false
+Type=Application
+Categories=Office;Viewer;
+Keywords=docs;pdf;latex;documentation;
+StartupNotify=false

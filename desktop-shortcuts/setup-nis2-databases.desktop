@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Setup NIS2 Databases
+Comment=Create and migrate databases for all NIS2 applications
+Exec=x-terminal-emulator -e bash -c 'cd /home/user/gautama/nis2-apps && ./scripts/setup-databases.sh; echo ""; echo "Press Enter to close..."; read'
+Icon=database
+Terminal=true
+Type=Application
+Categories=Development;Database;
+Keywords=nis2;database;supabase;migration;
+StartupNotify=true

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Open Typst Documentation PDF
+Comment=View the Typst-generated documentation PDF
+Exec=xdg-open /home/gautama/docs/gautama-docs-typst.pdf
+Icon=application-pdf
+Terminal=false
+Type=Application
+Categories=Office;Viewer;
+Keywords=docs;pdf;typst;documentation;
+StartupNotify=false

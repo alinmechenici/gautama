@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Start NIS2 Academy (Dev)
+Comment=Start NIS2 Academy development server on port 3004
+Exec=x-terminal-emulator -e bash -c 'cd /home/gautama/dev/nis2-academy && rails server -p 3004'
+Icon=media-playback-start
+Terminal=true
+Type=Application
+Categories=Development;WebDevelopment;
+Keywords=nis2;rails;server;academy;
+StartupNotify=true

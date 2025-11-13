@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Start NIS2 Services (Dev)
+Comment=Start NIS2 Services development server on port 3001
+Exec=x-terminal-emulator -e bash -c 'cd /home/gautama/dev/nis2-services && rails server -p 3001'
+Icon=media-playback-start
+Terminal=true
+Type=Application
+Categories=Development;WebDevelopment;
+Keywords=nis2;rails;server;services;
+StartupNotify=true

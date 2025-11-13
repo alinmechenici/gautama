@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Check System Status
+Comment=View status of all Gautama services
+Exec=x-terminal-emulator -e bash -c 'echo "=== Container Status ==="; podman ps; echo ""; echo "=== Failed Services ==="; systemctl --failed; echo ""; echo "Press Enter to close..."; read'
+Icon=dialog-information
+Terminal=true
+Type=Application
+Categories=System;Monitor;
+Keywords=status;services;containers;system;
+StartupNotify=true

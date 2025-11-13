@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=NixOS Rebuild Switch
+Comment=Rebuild and switch NixOS configuration (requires sudo)
+Exec=x-terminal-emulator -e bash -c 'cd /etc/nixos && sudo nixos-rebuild switch --flake ".#vulcan"; echo ""; echo "Press Enter to close..."; read'
+Icon=system-software-update
+Terminal=true
+Type=Application
+Categories=System;Settings;
+Keywords=nixos;rebuild;switch;system;
+StartupNotify=true

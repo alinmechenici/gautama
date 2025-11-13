@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Initialize NIS2 Applications
+Comment=Create all 4 NIS2 Rails applications with full setup
+Exec=x-terminal-emulator -e bash -c 'cd /home/user/gautama/nis2-apps && ./scripts/init-apps.sh; echo ""; echo "Press Enter to close..."; read'
+Icon=application-x-executable
+Terminal=true
+Type=Application
+Categories=Development;WebDevelopment;
+Keywords=nis2;rails;ruby;initialize;
+StartupNotify=true
