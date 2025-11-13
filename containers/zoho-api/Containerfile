@@ -1,0 +1,48 @@
+# ZOHO API Integration Service Container
+# FastAPI application for ZOHO services integration
+
+FROM docker.io/python:3.11-slim
+
+LABEL maintainer="gautama-system"
+LABEL description="ZOHO API integration service with FastAPI"
+LABEL version="1.0"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Create non-root user
+RUN useradd -m -u 1000 -s /bin/bash zoho && \
+    mkdir -p /app && \
+    chown -R zoho:zoho /app
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt /app/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application files
+COPY app.py /app/
+
+# Switch to non-root user
+USER zoho
+
+# Expose API port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Run FastAPI with uvicorn
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "2", "--log-level", "info"]

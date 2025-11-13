@@ -1,0 +1,90 @@
+# Quarto Production Container
+# Multi-stage build with full dependencies for R, Python, Julia support
+
+FROM docker.io/ubuntu:22.04 AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV QUARTO_VERSION=1.4.550
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    curl \
+    git \
+    gdebi-core \
+    pandoc \
+    python3 \
+    python3-pip \
+    r-base \
+    r-base-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download and install Quarto
+RUN wget https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb && \
+    gdebi --non-interactive quarto-${QUARTO_VERSION}-linux-amd64.deb && \
+    rm quarto-${QUARTO_VERSION}-linux-amd64.deb
+
+# Install Python packages commonly used with Quarto
+RUN pip3 install --no-cache-dir \
+    jupyter \
+    matplotlib \
+    plotly \
+    pandas \
+    numpy \
+    jupyter-cache
+
+# Install R packages commonly used with Quarto
+RUN R -e "install.packages(c('rmarkdown', 'knitr', 'ggplot2', 'dplyr'), repos='https://cloud.r-project.org/')"
+
+# ============================================
+# Production stage
+FROM docker.io/ubuntu:22.04
+
+LABEL maintainer="gautama-system"
+LABEL description="Quarto publishing system for production"
+LABEL version="1.0"
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV QUARTO_VERSION=1.4.550
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    curl \
+    pandoc \
+    python3 \
+    python3-pip \
+    r-base \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Quarto from builder
+COPY --from=builder /usr/local/bin/quarto /usr/local/bin/quarto
+COPY --from=builder /usr/local/share/quarto /usr/local/share/quarto
+
+# Copy Python packages
+COPY --from=builder /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
+
+# Copy R packages
+COPY --from=builder /usr/local/lib/R/site-library /usr/local/lib/R/site-library
+
+# Create non-root user
+RUN useradd -m -u 1000 -s /bin/bash quarto
+
+# Set working directory
+WORKDIR /projects
+
+# Change ownership
+RUN chown -R quarto:quarto /projects
+
+# Switch to non-root user
+USER quarto
+
+# Expose Quarto preview port
+EXPOSE 4001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:4001/ || exit 1
+
+# Default command: Start Quarto preview server
+CMD ["quarto", "preview", "--host", "0.0.0.0", "--port", "4001", "--no-browser", "--no-watch-inputs"]
