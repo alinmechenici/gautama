@@ -1,0 +1,93 @@
+name: Bug Report
+description: Report a bug or issue with the Gautama configuration
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the sections below.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of the bug
+      placeholder: What went wrong?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Navigate to...
+        2. Run command...
+        3. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Please paste relevant logs, error messages, or output
+      render: shell
+      placeholder: |
+        Paste logs here (redact any secrets!)
+
+  - type: input
+    id: nixos-version
+    attributes:
+      label: NixOS Version
+      description: Output of `nixos-version`
+      placeholder: "25.05"
+
+  - type: input
+    id: hardware
+    attributes:
+      label: Hardware
+      description: What hardware are you running on?
+      placeholder: "Mac Mini M2, 64GB RAM"
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Affected Module
+      description: Which module/service is affected?
+      options:
+        - Core (boot, networking, system)
+        - Services (nginx, postgres, mail, etc.)
+        - Containers (podman/quadlet)
+        - Monitoring (prometheus, grafana)
+        - Storage (ZFS, backups)
+        - Security (SOPS, step-ca)
+        - Other
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues
+        - label: I have tested on the latest version
+        - label: I have included relevant logs (with secrets redacted)
+        - label: I have provided steps to reproduce

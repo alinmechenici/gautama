@@ -1,5 +1,14 @@
 # Gautama - Production NixOS Configuration
 
+[![NixOS](https://img.shields.io/badge/NixOS-25.05-5277C3.svg?logo=nixos&logoColor=white)](https://nixos.org)
+[![Platform](https://img.shields.io/badge/Platform-Apple%20Silicon-000000.svg?logo=apple&logoColor=white)](https://asahilinux.org)
+[![Architecture](https://img.shields.io/badge/Architecture-aarch64--linux-brightgreen.svg)]()
+[![License](https://img.shields.io/badge/License-Personal%20Use-blue.svg)](LICENSE)
+[![Documentation](https://img.shields.io/badge/Documentation-Complete-success.svg)](docs/)
+[![Services](https://img.shields.io/badge/Services-60+-orange.svg)]()
+[![Containers](https://img.shields.io/badge/Containers-20+-purple.svg)]()
+[![Monitoring](https://img.shields.io/badge/Exporters-35+-red.svg)]()
+
 **Host: Vulcan** | **Platform: Apple Silicon (aarch64-linux via Asahi Linux)**
 
 A production-grade, modular NixOS configuration for comprehensive self-hosted infrastructure. Named "Gautama" after the Buddha's family name, this system represents an enlightened approach to infrastructure-as-code: a disciplined, declarative, and reproducible system that eliminates the chaos of traditional server management.
@@ -9,6 +18,49 @@ This configuration implements a complete stack including web services, mail infr
 ## About Gautama
 
 Gautama is not just a server configuration—it's a complete personal infrastructure platform that demonstrates enterprise-grade practices applied to self-hosted systems. With 60+ services, 20+ containerized applications, and comprehensive observability, it serves as both a production system and a reference implementation for advanced NixOS patterns.
+
+## Why Gautama?
+
+### The Philosophy
+
+Named after Siddhartha Gautama (the Buddha), this configuration embodies the principles of enlightenment applied to infrastructure:
+
+- **🧘 Mindful Architecture**: Every component is deliberately chosen and thoughtfully configured
+- **☸️ Path to Simplicity**: Complex problems solved through elegant, declarative solutions
+- **🌱 Continuous Improvement**: Iterative refinement based on real-world usage and monitoring
+- **📿 Disciplined Practice**: Strict adherence to best practices and security principles
+
+### Why NixOS?
+
+**Declarative Configuration**: The entire system is defined in code—no hidden state, no manual configuration drift.
+
+**Reproducibility**: Rebuild the exact same system anywhere, anytime. Disaster recovery becomes trivial.
+
+**Atomic Upgrades**: System changes are all-or-nothing. Rollback to any previous generation in seconds.
+
+**Development-Production Parity**: Test changes in a VM before deploying to production.
+
+### Why Self-Hosted?
+
+**Privacy & Control**: Your data stays on your hardware, encrypted and under your control.
+
+**Learning Platform**: Hands-on experience with production-grade infrastructure patterns.
+
+**Cost Efficiency**: One-time hardware investment vs. recurring cloud costs (estimated savings: $200+/month).
+
+**Integration Freedom**: Connect services without vendor lock-in or API limitations.
+
+### Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| **Apple Silicon** | Energy-efficient, powerful ARM platform with excellent Linux support via Asahi |
+| **ZFS Storage** | Enterprise-grade filesystem with snapshots, compression, and data integrity |
+| **Podman/Quadlet** | Rootless containers with systemd integration—secure and native |
+| **Prometheus Stack** | Industry-standard monitoring with rich ecosystem and excellent tooling |
+| **SOPS-nix** | Secrets in git without compromise—encrypted at rest, decrypted at activation |
+| **step-ca** | Private certificate authority for internal TLS without external dependencies |
+| **Multi-layer Backups** | Defense in depth: local snapshots + cloud backups = comprehensive protection |
 
 ## 🚀 Key Features
 
@@ -23,8 +75,17 @@ Gautama is not just a server configuration—it's a complete personal infrastruc
 - **🏠 Home-Manager Integration**: Declarative user environment management
 - **🍎 Apple Silicon Native**: Optimized for aarch64-linux on Apple hardware with Asahi Linux
 
+## 🚦 Quick Links
+
+📖 **Getting Started**: [Quick Start Guide](docs/md/QUICKSTART.md) • [FAQ](docs/md/FAQ.md) • [Troubleshooting](docs/md/TROUBLESHOOTING.md)
+
+🤝 **Contributing**: [Contributing Guide](CONTRIBUTING.md) • [Report Bug](../../issues/new?template=bug_report.yml) • [Request Feature](../../issues/new?template=feature_request.yml)
+
+🛠️ **Utilities**: [Health Check Script](scripts/health-check.sh) • [Service Status](scripts/service-status.sh)
+
 ## 📋 Table of Contents
 
+- [Why Gautama?](#why-gautama)
 - [Documentation & Diagrams](#documentation--diagrams)
 - [Architecture](#architecture)
 - [Infrastructure Components](#infrastructure-components)
@@ -51,8 +112,17 @@ Visual representations of the Gautama system architecture using D2 diagrams:
 - **[Service Dependencies](docs/d2/service-dependencies.d2)** - Service interactions, data flow, and critical paths
 - **[Monitoring Stack](docs/d2/monitoring-stack.d2)** - Complete observability infrastructure with 35+ exporters
 - **[Backup Strategy](docs/d2/backup-strategy.d2)** - Multi-layer backup and disaster recovery architecture
+- **[Network Topology](docs/d2/network-topology.d2)** - Network architecture, security zones, and traffic flow
 
 > **Tip**: View D2 diagrams using [D2 online viewer](https://play.d2lang.com/) or install D2 locally with `curl -fsSL https://d2lang.com/install.sh | sh -s --`
+
+### Essential Guides
+
+New to Gautama? Start here:
+
+- **[Quick Start Guide](docs/md/QUICKSTART.md)** - Step-by-step installation and setup (estimated time: 1-2 days)
+- **[Troubleshooting Guide](docs/md/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[FAQ](docs/md/FAQ.md)** - Frequently asked questions about Gautama and NixOS
 
 ### Detailed Documentation
 

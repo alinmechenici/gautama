@@ -1,0 +1,304 @@
+title: Gautama Network Topology {
+  near: top-center
+  shape: text
+  style: {
+    font-size: 40
+    bold: true
+  }
+}
+
+# External Networks
+external: {
+  label: "External Networks"
+  style.fill: "#ffe8e8"
+  style.stroke: "#cc0000"
+  style.stroke-width: 3
+
+  internet: {
+    label: "Internet"
+    cloudflare_dns: "1.1.1.1"
+    public_dns: "Public DNS"
+  }
+
+  vpn_networks: {
+    label: "VPN Networks"
+    tailscale: "Tailscale Mesh"
+    cloudflare_tunnel: "Cloudflare Tunnels"
+  }
+
+  external_services: {
+    label: "External Services"
+    backblaze: "Backblaze B2"
+    github: "GitHub"
+    fastmail: "Fastmail IMAP"
+    gmail: "Gmail IMAP"
+  }
+}
+
+# Edge/Firewall Layer
+edge: {
+  label: "Edge & Firewall"
+  style.fill: "#f4e8f0"
+  style.stroke: "#cc0066"
+  style.stroke-width: 3
+
+  firewall: {
+    label: "NixOS Firewall (nftables)"
+    rules: "Port Rules\nPacket Filtering\nNAT Rules"
+  }
+
+  vpn_endpoints: {
+    label: "VPN Endpoints"
+    tailscaled: "tailscaled\n100.x.x.x"
+    cloudflared: "cloudflared\nTunnels"
+  }
+}
+
+# DMZ / Public Services
+dmz: {
+  label: "DMZ / Public Services Layer"
+  style.fill: "#f8f4e8"
+  style.stroke: "#cc9900"
+  style.stroke-width: 3
+
+  nginx: {
+    label: "Nginx Reverse Proxy"
+    https: "0.0.0.0:443 (HTTPS)"
+    http: "0.0.0.0:80 (HTTP)"
+    tls: "TLS Termination"
+  }
+
+  public_endpoints: {
+    label: "Public Endpoints"
+    domains: "*.vulcan.lan\nInternal domains"
+  }
+}
+
+# Internal Service Network
+internal: {
+  label: "Internal Service Network (127.0.0.1 + ::1)"
+  style.fill: "#f0f8e8"
+  style.stroke: "#00cc66"
+  style.stroke-width: 3
+
+  web_services: {
+    label: "Web Services"
+    hass: "Home Assistant\n:8123"
+    grafana: "Grafana\n:3000"
+    nextcloud: "Nextcloud\n:80"
+    jellyfin: "Jellyfin\n:8096"
+    gitea: "Gitea\n:3001"
+  }
+
+  databases: {
+    label: "Databases"
+    postgres: "PostgreSQL\n:5432"
+    redis_litellm: "Redis (LiteLLM)\n:6379"
+    redis_nextcloud: "Redis (Nextcloud)\n:6380"
+  }
+
+  monitoring_services: {
+    label: "Monitoring Services"
+    prometheus: "Prometheus\n:9090"
+    alertmanager: "Alertmanager\n:9093"
+    node_exporter: "Node Exporter\n:9100"
+    postgres_exporter: "PostgreSQL Exporter\n:9187"
+  }
+
+  mail_services: {
+    label: "Mail Services"
+    dovecot: "Dovecot\n:143 (IMAP)"
+    postfix: "Postfix\n:25 (SMTP)"
+  }
+
+  infrastructure: {
+    label: "Infrastructure"
+    dns: "Technitium DNS\n:53, :5380"
+    step_ca: "step-ca\n:8443"
+  }
+}
+
+# Container Network
+container_network: {
+  label: "Podman Network (podman bridge)"
+  style.fill: "#e8f0f8"
+  style.stroke: "#0099cc"
+  style.stroke-width: 3
+
+  bridge: {
+    label: "podman0 Bridge"
+    network: "10.88.0.0/16"
+  }
+
+  ai_containers: {
+    label: "AI/ML Containers"
+    litellm: "LiteLLM\n:4000"
+    vanna: "Vanna AI\n:8084"
+    silly_tavern: "Silly Tavern\n:8000"
+  }
+
+  app_containers: {
+    label: "App Containers"
+    wallabag: "Wallabag\n:80"
+    monica: "Monica\n:80"
+    metabase: "Metabase\n:3000"
+  }
+
+  infra_containers: {
+    label: "Infrastructure"
+    opnsense_exp: "OPNsense Exporter\n:9233"
+  }
+}
+
+# Host Network
+host: {
+  label: "Host Network Interfaces"
+  style.fill: "#f0e8f4"
+  style.stroke: "#6600cc"
+  style.stroke-width: 2
+
+  physical: {
+    label: "Physical Interfaces"
+    wifi: "wlan0\nWiFi"
+    ethernet: "eth0 (optional)\nEthernet"
+  }
+
+  virtual: {
+    label: "Virtual Interfaces"
+    loopback: "lo\n127.0.0.1, ::1"
+    tailscale: "tailscale0\n100.x.x.x"
+    podman_bridge: "podman0\n10.88.0.1"
+  }
+}
+
+# Storage Network (Local)
+storage: {
+  label: "Storage Network (Local)"
+  style.fill: "#f8e8f0"
+  style.stroke: "#9900cc"
+  style.stroke-width: 2
+
+  zfs_pools: {
+    label: "ZFS Pools"
+    rpool: "rpool\nSystem data"
+    tank: "tank\nUser data"
+    gdrive: "gdrive\nArchive"
+  }
+
+  mounts: {
+    label: "Network Mounts"
+    nfs: "NFS (optional)"
+    smb: "Samba Shares"
+  }
+}
+
+# Network Flow: External → Edge
+external.internet -> edge.firewall: "Inbound traffic"
+external.vpn_networks.tailscale -> edge.vpn_endpoints.tailscaled: "VPN traffic"
+external.vpn_networks.cloudflare_tunnel -> edge.vpn_endpoints.cloudflared: "Tunnel traffic"
+
+# Network Flow: Edge → DMZ
+edge.firewall -> dmz.nginx: "Allowed traffic\nPorts: 80, 443"
+edge.vpn_endpoints -> internal: "VPN access"
+
+# Network Flow: DMZ → Internal
+dmz.nginx -> internal.web_services.hass: "Reverse proxy"
+dmz.nginx -> internal.web_services.grafana: "Reverse proxy"
+dmz.nginx -> internal.web_services.nextcloud: "Reverse proxy"
+dmz.nginx -> internal.web_services.jellyfin: "Reverse proxy"
+dmz.nginx -> internal.web_services.gitea: "Reverse proxy"
+
+# Network Flow: Internal Service Communication
+internal.web_services -> internal.databases: "Database connections"
+internal.monitoring_services.prometheus -> internal.web_services: "Metrics scraping"
+internal.monitoring_services.prometheus -> internal.databases: "Metrics scraping"
+internal.monitoring_services.prometheus -> internal.monitoring_services: "Self-monitoring"
+
+# Network Flow: Container Network
+container_network.bridge -> internal.databases: "host.containers.internal"
+container_network.ai_containers -> internal.databases.postgres: "SQL queries"
+container_network.ai_containers -> internal.databases.redis_litellm: "Caching"
+internal.monitoring_services.prometheus -> container_network: "Container metrics"
+
+# Network Flow: Host Network
+host.physical -> edge.firewall: "Network traffic"
+host.virtual.loopback -> internal: "Local services"
+host.virtual.tailscale -> edge.vpn_endpoints.tailscaled: "VPN interface"
+host.virtual.podman_bridge -> container_network.bridge: "Container bridge"
+
+# Network Flow: Storage
+internal -> storage.zfs_pools: "Data storage"
+external.external_services.backblaze -> storage.zfs_pools: "Backup replication"
+
+# Network Flow: Outbound
+internal.mail_services -> external.external_services.fastmail: "Mail sync"
+internal.mail_services -> external.external_services.gmail: "Mail sync"
+internal.web_services.gitea -> external.external_services.github: "Git mirrors"
+storage.zfs_pools -> external.external_services.backblaze: "Restic backups"
+
+# DNS Flow
+internal.infrastructure.dns -> external.internet.cloudflare_dns: "Upstream DNS"
+internal -> internal.infrastructure.dns: "DNS queries\n:53"
+
+# TLS/PKI Flow
+internal.infrastructure.step_ca -> dmz.nginx: "Issues certificates"
+internal.infrastructure.step_ca -> internal: "Internal TLS"
+
+# Port Mapping Legend
+ports: {
+  label: "Port Mapping Reference"
+  style.fill: "#fffde8"
+  style.stroke: "#ccaa00"
+  style.stroke-width: 2
+
+  public: {
+    label: "Public Ports"
+    list: "• 80 (HTTP)\n• 443 (HTTPS)\n• Tailscale: WireGuard"
+  }
+
+  internal: {
+    label: "Internal Ports"
+    list: "• 5432 (PostgreSQL)\n• 9090 (Prometheus)\n• 3000 (Grafana)\n• 8123 (Home Assistant)\n• 143 (IMAP)\n• 25 (SMTP)\n• 53 (DNS)\n• 8443 (step-ca)"
+  }
+
+  container: {
+    label: "Container Ports"
+    list: "• 4000 (LiteLLM)\n• 8084 (Vanna AI)\n• 8000 (Silly Tavern)\n• Various app ports"
+  }
+}
+
+# Security Zones
+security_zones: {
+  label: "Security Zones"
+  style.fill: "#e8ffe8"
+  style.stroke: "#00aa00"
+  style.stroke-width: 2
+
+  info: {
+    label: "Zone Isolation"
+    untrusted: "🔴 Untrusted: External Internet"
+    edge: "🟡 Edge: Firewall/VPN endpoints"
+    dmz: "🟠 DMZ: Nginx reverse proxy"
+    trusted: "🟢 Trusted: Internal services"
+    container: "🔵 Container: Isolated container network"
+    storage: "🟣 Storage: Local storage network"
+  }
+
+  rules: {
+    label: "Traffic Rules"
+    list: "• External → Edge: Firewall filtered\n• Edge → DMZ: Port-restricted\n• DMZ → Trusted: Reverse proxy only\n• Containers → Trusted: Bridge network\n• VPN → Trusted: Authenticated access"
+  }
+}
+
+# Network Statistics
+stats: {
+  label: "Network Configuration"
+  style.fill: "#f8f8e8"
+  style.stroke: "#888888"
+  style.stroke-width: 1
+
+  info: "Networks:\n• Host: WiFi + Virtual interfaces\n• Loopback: 127.0.0.1, ::1\n• Tailscale: 100.x.x.x/10\n• Podman: 10.88.0.0/16\n\nServices: 60+ listening ports\nContainers: 20+ exposed ports\nFirewall: nftables with strict rules" {
+    shape: text
+    style.font-size: 13
+  }
+}
