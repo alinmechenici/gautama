@@ -79,7 +79,7 @@ Named after Siddhartha Gautama (the Buddha), this configuration embodies the pri
 
 📖 **Getting Started**: [Quick Start Guide](docs/md/QUICKSTART.md) • [FAQ](docs/md/FAQ.md) • [Troubleshooting](docs/md/TROUBLESHOOTING.md)
 
-🤝 **Contributing**: [Contributing Guide](CONTRIBUTING.md) • [Report Bug](../../issues/new?template=bug_report.yml) • [Request Feature](../../issues/new?template=feature_request.yml)
+🤝 **Contributing**: [Contributing Guide](CONTRIBUTING.md) • [Git Workflow](docs/md/GIT_WORKFLOW.md) • [Report Bug](../../issues/new?template=bug_report.yml) • [Request Feature](../../issues/new?template=feature_request.yml)
 
 🛠️ **Utilities**: [Health Check Script](scripts/health-check.sh) • [Service Status](scripts/service-status.sh)
 
@@ -165,6 +165,7 @@ Comprehensive documentation covering all aspects of the system:
 - [Nginx to Caddy Migration PRD](docs/md/NGINX_TO_CADDY_MIGRATION_PRD.md) - Potential migration plan
 
 #### **Development & Git**
+- [Git Workflow Guide](docs/md/GIT_WORKFLOW.md) - Working with branches, merging research branches to main
 - [Gitea Organization Workflow](docs/md/GITEA_ORG_WORKFLOW.md) - Git workflow with organizations
 - [GitHub Mirror Setup](docs/md/GITHUB_MIRROR_SETUP.md) - Automated repository mirroring
 
