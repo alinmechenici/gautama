@@ -132,6 +132,13 @@ Comprehensive documentation covering all aspects of the system:
 - [Architectural Review](docs/md/ARCHITECTURAL_REVIEW.md) - Complete architectural analysis and recommendations
 - [Quadlet Guide](docs/md/quadlet-guide.md) - Podman Quadlet container orchestration guide
 
+#### **Publishing & Project Management**
+- [Publishing Services Guide](docs/md/PUBLISHING_SERVICES.md) - Jekyll, Quarto, Typst, and Redmine setup
+  - Jekyll: Static site generator
+  - Quarto: Technical publishing
+  - Typst: Modern typesetting
+  - Redmine: Project management
+
 #### **Smart Home & Automation**
 - [Home Assistant Devices](docs/md/HOME_ASSISTANT_DEVICES.md) - Complete device integration documentation
 - [Home Assistant NWS Rain Detection](docs/md/HOME_ASSISTANT_NWS_RAIN_DETECTION.md) - Weather-based automation
@@ -205,10 +212,10 @@ This configuration follows a highly modular architecture, organizing system conf
 | Metric | Count | Description |
 |--------|-------|-------------|
 | **Nix Files** | 167 | Total configuration files |
-| **Service Modules** | 62 | Distinct service configurations |
+| **Service Modules** | 66 | Distinct service configurations |
 | **Monitoring Modules** | 35+ | Prometheus exporters and collectors |
-| **Container Services** | 22 | Podman/Quadlet containers |
-| **Active Services** | 60+ | Running systemd services |
+| **Container Services** | 24 | Podman/Quadlet containers |
+| **Active Services** | 64+ | Running systemd services |
 | **Systemd Timers** | 32+ | Scheduled automation tasks |
 | **Documentation Lines** | 15,000+ | In-repo documentation |
 | **Flake Inputs** | 11 | External dependencies |
@@ -226,6 +233,32 @@ This configuration follows a highly modular architecture, organizing system conf
 - **Glance**: Alternative dashboard with customizable widgets
 - **Nextcloud**: Self-hosted cloud storage and collaboration
 - **Wallabag**: Read-it-later service (containerized)
+
+### Publishing & Documentation Services
+
+- **Jekyll**: Static site generator for blogs and documentation
+  - Live reload during development
+  - Markdown and Liquid templating
+  - Tailscale network access
+- **Quarto**: Technical publishing system
+  - Multi-language support (Python, R, Julia, Observable)
+  - Create documents, presentations, websites, books
+  - Live preview with code execution
+  - Tailscale network access
+- **Typst**: Modern typesetting system
+  - LaTeX-quality output with simpler syntax
+  - Fast compilation
+  - Web-based editor with live preview
+  - Tailscale network access
+
+### Project Management
+
+- **Redmine**: Flexible project management platform
+  - Issue tracking and bug reports
+  - Project wikis and documentation
+  - Time tracking and Gantt charts
+  - PostgreSQL backend with daily backups
+  - Tailscale network access
 
 ### Mail Infrastructure
 
