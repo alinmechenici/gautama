@@ -1,0 +1,56 @@
+# NIS2 Apps - Git Ignore File
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Rails
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/storage/*
+!/storage/.keep
+/public/packs
+/public/packs-test
+/public/assets
+.byebug_history
+
+# Ruby/Bundler
+/.bundle
+/vendor/bundle
+*.gem
+*.rbc
+
+# RSpec
+/spec/examples.txt
+
+# Node modules
+node_modules/
+/public/packs
+/public/packs-test
+
+# MacOS
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Docker volumes
+docker-volumes/
+
+# Secrets
+secrets.yaml
+*.pem
+*.key
+!*.example
+
+# Build artifacts
+*.log
+.*.pid
+coverage/
